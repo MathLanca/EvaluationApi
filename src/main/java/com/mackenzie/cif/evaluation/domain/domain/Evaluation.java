@@ -20,9 +20,9 @@ public class Evaluation {
     @NotNull
     private String location;
     @NotNull
-    private String therapistCpf;
+    private String therapistId;
     @NotNull
-    private String patientCpf;
+    private String patientId;
     @NotNull
     private List<Answer> answers;
 }

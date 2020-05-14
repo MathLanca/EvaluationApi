@@ -26,10 +26,10 @@ public class EvaluationService {
         }
     }
 
-    public List<Evaluation> retrieveTherapistEvaluations(String therapistCpf){
+    public List<Evaluation> retrieveTherapistEvaluations(String therapistId){
         List<Evaluation> evaluations;
         try{
-            evaluations = repository.findAllByTherapistCpf(therapistCpf);
+            evaluations = repository.findAllByTherapistId(therapistId);
             if(evaluations != null) {
                 evaluations.sort((e1, e2) -> {
                     if (e1.getDate() == null || e2.getDate() == null) return 0;

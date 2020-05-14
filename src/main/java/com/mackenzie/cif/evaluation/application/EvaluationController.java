@@ -34,12 +34,12 @@ public class EvaluationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/therapistevaluations/{cpf}")
-    public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String cpf){
+    @GetMapping("/therapistevaluations/{id}")
+    public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String id){
         log.info("list evaluations >>>>>");
         List<Evaluation> evaluations;
         try{
-            evaluations = service.retrieveTherapistEvaluations(cpf);
+            evaluations = service.retrieveTherapistEvaluations(id);
         }catch (Exception e ){
             return new ResponseEntity<>("Error while retrieving evaluations", HttpStatus.INTERNAL_SERVER_ERROR);
         }
