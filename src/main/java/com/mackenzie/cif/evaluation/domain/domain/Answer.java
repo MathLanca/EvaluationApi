@@ -3,6 +3,8 @@ package com.mackenzie.cif.evaluation.domain.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Answer {
@@ -11,12 +13,12 @@ public class Answer {
 
     private String problemDescription;
 
-    private Integer generalGrade;
+    private BigDecimal generalGrade;
 
-    private Integer cGrade;
-    private Integer pGrade;
+    private BigDecimal cGrade;
+    private BigDecimal pGrade;
 
-    private Integer locationGrade;
-    private Integer extensionGrade;
-    private Integer natureGrade;
+    private BigDecimal locationGrade;
+    private BigDecimal extensionGrade;
+    private BigDecimal natureGrade;
 }
