@@ -30,8 +30,8 @@ Evaluation Object
 | :--- | :--- | :--- |
 | `LocalDateTime` | `date` | **true** |
 | `String` | `location` | **true** |
-| `String` | `therapistCpf` | **true** |
-| `String` | `patientCpf` | **true** |
+| `String` | `therapistId` | **true** |
+| `String` | `patientId` | **true** |
 | `List<Answer>` | `answers` | **true** |
 
 Answer Object
