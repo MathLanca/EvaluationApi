@@ -18,7 +18,8 @@ public class EvaluationController {
 
     @Autowired
     private EvaluationService service;
-
+    
+    @CrossOrigin("*")
     @PostMapping("/new")
     public ResponseEntity<?> newEvaluation(@RequestBody @Valid Evaluation body){
         log.info("New evaluation started >>>>>");
@@ -34,6 +35,7 @@ public class EvaluationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @CrossOrigin("*")
     @GetMapping("/therapistevaluations/{id}")
     public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String id){
         log.info("list evaluations >>>>>");
