@@ -21,8 +21,10 @@ public class Evaluation {
     private String location;
     @NotNull
     private String therapistId;
+    private String therapistName;
     @NotNull
     private String patientId;
+    private String patientName;
     @NotNull
     private List<Answer> answers;
 }

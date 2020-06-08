@@ -1,6 +1,7 @@
 package com.mackenzie.cif.evaluation.application;
 
 import com.mackenzie.cif.evaluation.domain.domain.Evaluation;
+import com.mackenzie.cif.evaluation.domain.domain.Person;
 import com.mackenzie.cif.evaluation.domain.serice.EvaluationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,27 @@ public class EvaluationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/therapistevaluations/{id}")
-    public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String id){
+    @GetMapping("/therapistevaluations/{therapistId}")
+    public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String therapistId){
         log.info("list evaluations >>>>>");
         List<Evaluation> evaluations;
         try{
-            evaluations = service.retrieveTherapistEvaluations(id);
+            evaluations = service.retrieveTherapistEvaluations(therapistId);
         }catch (Exception e ){
             return new ResponseEntity<>("Error while retrieving evaluations", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(evaluations, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> retrieveEvaluation(@PathVariable String id){
+        log.info("Find Evaluation started >>>>>");
+        Evaluation evaluation;
+        try{
+            evaluation = service.retrieveEvaluation(id);
+        }catch (Exception e ){
+            return new ResponseEntity<>("Error while retrieving evaluation", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(evaluation, HttpStatus.OK);
     }
 }
