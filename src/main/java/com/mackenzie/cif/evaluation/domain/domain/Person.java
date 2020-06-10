@@ -20,4 +20,8 @@ public class Person {
     private String telephoneNumber;
     private Address address;
     private Boolean active;
+
+    public String getFullName(){
+        return this.getFirstName() + " " + this.getLastName();
+    }
 }

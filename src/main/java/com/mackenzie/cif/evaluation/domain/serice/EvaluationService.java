@@ -20,6 +20,7 @@ public class EvaluationService {
     @Autowired
     EvaluationRepository repository;
 
+    PersonRepository personRepository = new PersonRepository();
 
     public void newEvaluation(Evaluation evaluation){
         try{
@@ -34,17 +35,55 @@ public class EvaluationService {
         List<Evaluation> evaluations;
         try{
             evaluations = repository.findAllByTherapistId(therapistId);
-            if(evaluations != null) {
-                evaluations.sort((e1, e2) -> {
-                    if (e1.getDate() == null || e2.getDate() == null) return 0;
-                    return e1.getDate().compareTo(e2.getDate());
-                });
+
+            log.info("getting patient list");
+            List<Person> patients;
+            try{
+                 patients = personRepository.getPaientList(therapistId);
+                 if(patients == null){
+                     log.error("Could not get patient list");
+                     throw new RuntimeException("Could not get patient list");
+                 }
+            }catch (Exception e){
+                log.error("Could not get patient list");
+                throw e;
             }
+            if(patients.isEmpty()) {
+                log.error("No patients found");
+                throw new RuntimeException("No patients found");
+            }
+
+            try{
+                this.setPatientsNameInEvaluation(patients,evaluations);
+            }catch (Exception e){
+                log.error("Could not set patient name into evaluations");
+                throw e;
+            }
+
+            evaluations.sort((e1, e2) -> {
+                if (e1.getDate() == null || e2.getDate() == null) return 0;
+                return e1.getDate().compareTo(e2.getDate());
+            });
         }catch (Exception e){
             log.error("Could not save this evaluation");
             throw e;
         }
         return evaluations;
+    }
+
+    private void setPatientsNameInEvaluation(List<Person> patients, List<Evaluation> evaluations){
+        log.info("Setting patient names in evaluations");
+        evaluations.forEach(evaluation ->
+            evaluation.setPatientName(findPatientName(evaluation.getPatientId(),patients))
+        );
+    }
+
+    private String findPatientName(String patientId,List<Person> patients){
+        log.info("Searching patient name");
+        Person person = patients.stream().filter(patient ->
+            patient.getId().equals(patientId)
+        ).findAny().orElse(null);
+        return person != null ? person.getFullName() : null;
     }
 
     public Evaluation retrieveEvaluation(String evaluationID){
@@ -53,7 +92,7 @@ public class EvaluationService {
             Optional<Evaluation> response = repository.findById(evaluationID);
             if(response.isPresent()){
                 evaluation = response.get();
-                PersonRepository personRepository = new PersonRepository();
+
                 Person therapist = personRepository.getPersonDetails(response.get().getTherapistId());
                 if(therapist != null){
                     evaluation.setTherapistName(therapist.getFirstName().concat(" "+therapist.getLastName()));
