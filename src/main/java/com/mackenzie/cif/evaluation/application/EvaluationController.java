@@ -21,6 +21,7 @@ public class EvaluationController {
     private EvaluationService service;
 
     @PostMapping("/new")
+    @CrossOrigin("*")
     public ResponseEntity<?> newEvaluation(@RequestBody @Valid Evaluation body){
         log.info("New evaluation started >>>>>");
 
@@ -36,6 +37,7 @@ public class EvaluationController {
     }
 
     @GetMapping("/therapistevaluations/{therapistId}")
+    @CrossOrigin("*")
     public ResponseEntity<?> retrieveTherapistEvaluations(@PathVariable String therapistId){
         log.info("list evaluations >>>>>");
         List<Evaluation> evaluations;
@@ -48,6 +50,7 @@ public class EvaluationController {
     }
 
     @GetMapping("{id}")
+    @CrossOrigin("*")
     public ResponseEntity<?> retrieveEvaluation(@PathVariable String id){
         log.info("Find Evaluation started >>>>>");
         Evaluation evaluation;
