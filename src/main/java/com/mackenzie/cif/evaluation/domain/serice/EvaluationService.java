@@ -2,8 +2,10 @@ package com.mackenzie.cif.evaluation.domain.serice;
 
 import com.mackenzie.cif.evaluation.domain.domain.Evaluation;
 import com.mackenzie.cif.evaluation.domain.domain.Person;
+import com.mackenzie.cif.evaluation.domain.domain.Question;
 import com.mackenzie.cif.evaluation.domain.repository.EvaluationRepository;
 import com.mackenzie.cif.evaluation.domain.repository.PersonRepository;
+import com.mackenzie.cif.evaluation.domain.repository.QuestionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class EvaluationService {
 
     @Autowired
     EvaluationRepository repository;
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     PersonRepository personRepository = new PersonRepository();
 
@@ -91,9 +96,37 @@ public class EvaluationService {
         } catch (Exception e) {
             throw e;
         }
+
+        try{
+           List<Question> questoins = questionRepository.findAll();
+           if(questoins == null || questoins.isEmpty()){
+               log.error("Could not get questions");
+               throw new RuntimeException("Could not get questions");
+           }
+           if(evaluation != null) {
+               setQuestionInEvaluation(questoins, evaluation);
+           }
+        }catch (Exception e){
+            log.error("Could not get questions");
+            throw e;
+        }
         return evaluation;
     }
 
+    private void setQuestionInEvaluation(List<Question> questions, Evaluation evaluation){
+        evaluation.getAnswers().forEach(answer -> {
+            Question quest = findQuestion(answer.getQuestionId(),questions);
+            answer.setQuestionCode(quest.getCode());
+            answer.setQuestionDescription(quest.getDescription());
+        });
+    }
+
+    private Question findQuestion(String questionId,List<Question> questions){
+        return questions.stream()
+                .filter(question -> question.getId().equals(questionId))
+                .findAny()
+                .orElse(null);
+    }
 
     private void setNamesInEvaluation(List<Person> patients, List<Evaluation> evaluations) {
         Person therapist;

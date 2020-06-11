@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 @Data
 public class Answer {
     private String questionId;
+    private String questionCode;
+    private String questionDescription;
     private String infoSource;
     private String problemDescription;
     private BigDecimal generalGrade;
