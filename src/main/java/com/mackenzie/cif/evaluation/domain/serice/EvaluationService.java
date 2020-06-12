@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +23,8 @@ public class EvaluationService {
     @Autowired
     QuestionRepository questionRepository;
 
-    PersonRepository personRepository = new PersonRepository();
+    @Autowired
+    PersonRepository personRepository;
 
     public void newEvaluation(Evaluation evaluation) {
         try {
@@ -48,7 +47,7 @@ public class EvaluationService {
             log.info("getting patient list");
             List<Person> patients;
             try {
-                patients = personRepository.getPaientList(therapistId);
+                patients = personRepository.findAllByPatientNotNullAndPatientTherapistId(therapistId);
                 if (patients == null) {
                     log.error("Could not get patient list");
                     throw new RuntimeException("Could not get patient list");
@@ -88,13 +87,13 @@ public class EvaluationService {
             if (response.isPresent()) {
                 evaluation = response.get();
 
-                Person therapist = personRepository.getPersonDetails(response.get().getTherapistId());
-                if (therapist != null) {
-                    evaluation.setTherapistName(therapist.getFullName());
+                Optional<Person> therapist = personRepository.findById(response.get().getTherapistId());
+                if (therapist.isPresent()) {
+                    evaluation.setTherapistName(therapist.get().getFullName());
                 }
-                Person patient = personRepository.getPersonDetails(response.get().getPatientId());
-                if (patient != null) {
-                    evaluation.setPatientName(patient.getFullName());
+                Optional<Person> patient = personRepository.findById(response.get().getPatientId());
+                if (patient.isPresent()) {
+                    evaluation.setPatientName(patient.get().getFullName());
                 }
             }
         } catch (Exception e) {
@@ -103,7 +102,7 @@ public class EvaluationService {
 
         try{
            List<Question> questoins = questionRepository.findAll();
-           if(questoins == null || questoins.isEmpty()){
+           if(questoins.isEmpty()){
                log.error("Could not get questions");
                throw new RuntimeException("Could not get questions");
            }
@@ -135,18 +134,21 @@ public class EvaluationService {
     private void setNamesInEvaluation(List<Person> patients, List<Evaluation> evaluations) {
         Person therapist;
         try {
-            therapist = personRepository.getPersonDetails(evaluations.get(0).getTherapistId());
+            Optional<Person> optional = personRepository.findById(evaluations.get(0).getTherapistId());
+            if(optional.isPresent()){
+                therapist = optional.get();
+                log.info("Setting patient names in evaluations");
+                Person finalTherapist = therapist;
+                evaluations.forEach(evaluation -> {
+                            evaluation.setTherapistName(finalTherapist.getFullName());
+                            evaluation.setPatientName(findPatientName(evaluation.getPatientId(), patients));
+                        }
+                );
+            }
         } catch (Exception e) {
             log.error("Could not get therapist data");
             throw e;
         }
-
-        log.info("Setting patient names in evaluations");
-        evaluations.forEach(evaluation -> {
-                    evaluation.setTherapistName(therapist.getFullName());
-                    evaluation.setPatientName(findPatientName(evaluation.getPatientId(), patients));
-                }
-        );
     }
 
     private String findPatientName(String patientId, List<Person> patients) {
