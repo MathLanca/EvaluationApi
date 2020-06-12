@@ -41,6 +41,10 @@ public class EvaluationService {
         try {
             evaluations = repository.findAllByTherapistId(therapistId);
 
+            if(evaluations == null || evaluations.isEmpty()){
+                return evaluations;
+            }
+
             log.info("getting patient list");
             List<Person> patients;
             try {
