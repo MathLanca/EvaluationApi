@@ -1,7 +1,6 @@
 package com.mackenzie.cif.evaluation.application;
 
 import com.mackenzie.cif.evaluation.domain.domain.Evaluation;
-import com.mackenzie.cif.evaluation.domain.domain.Person;
 import com.mackenzie.cif.evaluation.domain.serice.EvaluationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,9 @@ public class EvaluationController {
 
     @Autowired
     private EvaluationService service;
-    
+
     @CrossOrigin("*")
     @PostMapping("/new")
-    @CrossOrigin("*")
     public ResponseEntity<?> newEvaluation(@RequestBody @Valid Evaluation body){
         log.info("New evaluation started >>>>>");
 
