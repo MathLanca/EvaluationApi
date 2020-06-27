@@ -19,7 +19,8 @@ public class EvaluationController {
 
     @Autowired
     private EvaluationService service;
-
+    
+    @CrossOrigin("*")
     @PostMapping("/new")
     @CrossOrigin("*")
     public ResponseEntity<?> newEvaluation(@RequestBody @Valid Evaluation body){
