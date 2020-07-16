@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface EvaluationRepository extends MongoRepository<Evaluation, String> {
     List<Evaluation> findAllByTherapistId(String therapistId);
+
+    List<Evaluation> findAllByPatientId(String patientId);
 }

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +67,42 @@ public class EvaluationService {
                 this.setNamesInEvaluation(patients, evaluations);
             } catch (Exception e) {
                 log.error("Could not set patient name into evaluations");
+                throw e;
+            }
+
+            evaluations.sort((e1, e2) -> {
+                if (e1.getDate() == null || e2.getDate() == null) return 0;
+                return e1.getDate().compareTo(e2.getDate());
+            });
+        } catch (Exception e) {
+            log.error("Could not save this evaluation");
+            throw e;
+        }
+        return evaluations;
+    }
+
+    public List<Evaluation> retrievePatientEvaluations(String patientId) {
+        List<Evaluation> evaluations;
+        try {
+            evaluations = repository.findAllByPatientId(patientId);
+
+            if(evaluations == null || evaluations.isEmpty()){
+                return evaluations;
+            }
+
+            try{
+                Optional<Person> opPatient = personRepository.findById(patientId);
+                Optional<Person> opTherapist = personRepository.findById(evaluations.get(0).getTherapistId());
+                if(opPatient.isPresent() && opTherapist.isPresent()){
+                    Person patient = opPatient.get();
+                    Person therapist = opTherapist.get();
+                    evaluations.forEach(evaluation -> {
+                        evaluation.setPatientName(patient.getFullName());
+                        evaluation.setTherapistName(therapist.getFullName());
+                    });
+                }
+            }catch (Exception e){
+                log.error("Could not set person data on this evaluation");
                 throw e;
             }
 

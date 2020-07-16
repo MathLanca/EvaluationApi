@@ -48,6 +48,19 @@ public class EvaluationController {
         return new ResponseEntity<>(evaluations, HttpStatus.OK);
     }
 
+    @GetMapping("/patientevaluations/{patientId}")
+    @CrossOrigin("*")
+    public ResponseEntity<?> retrievePatientEvaluations(@PathVariable String patientId){
+        log.info("list evaluations >>>>>");
+        List<Evaluation> evaluations;
+        try{
+            evaluations = service.retrievePatientEvaluations(patientId);
+        }catch (Exception e ){
+            return new ResponseEntity<>("Error while retrieving evaluations", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(evaluations, HttpStatus.OK);
+    }
+
     @GetMapping("{id}")
     @CrossOrigin("*")
     public ResponseEntity<?> retrieveEvaluation(@PathVariable String id){
