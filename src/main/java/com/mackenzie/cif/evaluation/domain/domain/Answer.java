@@ -11,7 +11,7 @@ public class Answer {
     private String questionDescription;
     private String infoSource;
     private String problemDescription;
-    private BigDecimal generalGrade;
+    private String generalGrade;
     private BigDecimal capacityGrade;
     private BigDecimal performanceGrade;
     private BigDecimal locationGrade;
