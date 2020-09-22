@@ -9,6 +9,7 @@ public class Answer {
     private String questionId;
     private String questionCode;
     private String questionDescription;
+    private String questionGroup;
     private String infoSource;
     private String problemDescription;
     private String generalGrade;

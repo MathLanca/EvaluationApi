@@ -157,6 +157,7 @@ public class EvaluationService {
         evaluation.getAnswers().forEach(answer -> {
             Question quest = findQuestion(answer.getQuestionId(),questions);
             answer.setQuestionCode(quest.getCode());
+            answer.setQuestionGroup(quest.getGroup());
             answer.setQuestionDescription(quest.getTitle());
         });
     }
